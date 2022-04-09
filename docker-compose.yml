@@ -1,0 +1,114 @@
+version: '2'
+
+services:
+
+    # https://github.com/debezium/docker-images/blob/main/zookeeper/1.9
+    zookeeper:
+        container_name: zookeeper
+        image: 'quay.io/debezium/zookeeper:1.9'
+        ports:
+            # Ports 2888 and 3888 have to do with communication among Zookeeper servers:
+            # https://zookeeper.apache.org/doc/r3.1.2/zookeeperStarted.html
+            - '2181:2181'
+            - '2888:2888'
+            - '3888:3888'
+
+    # https://github.com/debezium/docker-images/tree/main/kafka/1.9
+    kafka:
+        container_name: kafka
+        depends_on:
+            - zookeeper
+        image: 'quay.io/debezium/kafka:1.9'
+        ports:
+            # External ports 9092 and 9093 both map to internal docker port 9092
+            # Workaround for having to use unique ports for KAFKA_LISTENERS
+            - '9092:9092'
+            - '9093:9092'
+        links:
+            - 'zookeeper:zookeeper'
+        environment:
+            - ZOOKEEPER_CONNECT=zookeeper
+            - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+            - KAFKA_LISTENERS=FROM_DOCKER://kafka:9092,FROM_LOCALHOST://kafka:9093
+            - KAFKA_ADVERTISED_LISTENERS=FROM_DOCKER://kafka:9092,FROM_LOCALHOST://localhost:9093
+            - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=FROM_DOCKER:PLAINTEXT,FROM_LOCALHOST:PLAINTEXT
+            - KAFKA_INTER_BROKER_LISTENER_NAME=FROM_DOCKER
+
+    # https://github.com/debezium/docker-images/tree/main/connect/1.9
+    connect:
+        container_name: connect
+        depends_on:
+            - kafka
+        image: 'quay.io/debezium/connect:1.9'
+        ports:
+            - '8083:8083'
+        links:
+            - 'kafka:kafka'
+        environment:
+            - BOOTSTRAP_SERVERS=kafka:9092
+            - GROUP_ID=1
+            - CONFIG_STORAGE_TOPIC=my_connect_configs
+            - OFFSET_STORAGE_TOPIC=my_connect_offsets
+            - STATUS_STORAGE_TOPIC=my_connect_statuses
+
+    api-dev:
+        container_name: api-dev
+        depends_on:
+            - kafka
+        image: 'xlsson/kafka-proto-api:0.1'
+        ports:
+            - '1932:1932'
+
+    register:
+        container_name: register
+        depends_on:
+            - connect
+        image: 'xlsson/kafka-proto-register:0.1'
+        links:
+            - 'connect:connect'
+        environment:
+            - SERVER=connect
+            - CONNECTORNAME=xlsson-connector
+            - DBHOSTNAME=host.docker.internal
+            - DBPORT=1433
+            - DBUSER=richard
+            - DBPASSWORD=password
+            - DBNAME=xlsson
+            - SERVERNAME=MSSQLSERVER
+            - TABLEINCLUDELIST=dbo.persons
+            - DBHISTBOOTSTRAPSERVERS=kafka:9092
+            - DBHISTTOPIC=dbhistory.MSSQLSERVER
+
+    consumer:
+        container_name: consumer
+        depends_on:
+            - connect
+            - api-dev
+        image: 'xlsson/kafka-proto-consumer:0.1'
+        ports:
+            - '1932:1932'
+        links:
+            - 'kafka:kafka'
+        environment:
+            - TOPIC=MSSQLSERVER.dbo.persons
+            - BOOTSTRAP_BROKER_SERVER=kafka
+            - BOOTSTRAP_BROKER_PORT=9092
+            - API_ENDPOINT_SERVER=api-dev
+            - API_ENDPOINT_PORT=5000
+
+    consumer-dev:
+        container_name: consumer-dev
+        depends_on:
+            - connect
+            - api-dev
+        image: ''xlsson/kafka-proto-consumer-dev:0.1'
+        ports:
+            - '1932:1932'
+        links:
+            - 'kafka:kafka'
+        environment:
+            - TOPIC=MSSQLSERVER.dbo.persons
+            - BOOTSTRAP_BROKER_SERVER=kafka
+            - BOOTSTRAP_BROKER_PORT=9092
+            - API_ENDPOINT_SERVER=api-dev
+            - API_ENDPOINT_PORT=5000
