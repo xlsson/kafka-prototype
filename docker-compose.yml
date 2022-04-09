@@ -101,7 +101,7 @@ services:
         depends_on:
             - connect
             - api-dev
-        image: ''xlsson/kafka-proto-consumer-dev:0.1'
+        image: 'xlsson/kafka-proto-consumer-dev:0.2'
         ports:
             - '1932:1932'
         links:
@@ -112,3 +112,16 @@ services:
             - BOOTSTRAP_BROKER_PORT=9092
             - API_ENDPOINT_SERVER=api-dev
             - API_ENDPOINT_PORT=5000
+
+    mocker-dev:
+        container_name: mocker-dev
+        image: 'xlsson/kafka-proto-mocker-dev:0.1'
+        ports:
+            - '1891:1891'
+        environment:
+            - DBHOSTNAME=host.docker.internal
+            - DBPORT=1433
+            - SERVERNAME=MSSQLSERVER
+            - DBNAME=xlsson
+            - DBUSER=richard
+            - DBPASSWORD=password
