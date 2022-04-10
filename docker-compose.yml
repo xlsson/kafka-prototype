@@ -115,13 +115,14 @@ services:
 
     mocker-dev:
         container_name: mocker-dev
-        image: 'xlsson/kafka-proto-mocker-dev:0.1'
-        ports:
-            - '1891:1891'
+        image: 'xlsson/kafka-proto-mocker-dev:0.2'
+        volumes:
+        - ./containers/mocker:/mocker
         environment:
             - DBHOSTNAME=host.docker.internal
             - DBPORT=1433
             - SERVERNAME=MSSQLSERVER
             - DBNAME=xlsson
+            - DBTABLE=STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
             - DBUSER=richard
             - DBPASSWORD=password
