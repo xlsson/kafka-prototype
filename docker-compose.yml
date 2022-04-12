@@ -115,7 +115,7 @@ services:
 
     mocker-dev:
         container_name: mocker-dev
-        image: 'xlsson/kafka-proto-mocker-dev:0.2'
+        image: 'xlsson/kafka-proto-mocker-dev:0.3'
         volumes:
         - ./containers/mocker:/mocker
         environment:
