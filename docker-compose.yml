@@ -126,3 +126,4 @@ services:
             - DBTABLE=STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
             - DBUSER=richard
             - DBPASSWORD=password
+            - SCENARIO=std
