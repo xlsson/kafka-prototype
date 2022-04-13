@@ -21,13 +21,13 @@ class Message():
         # https://docs.confluent.io/4.1.2/clients/confluent-kafka-python/index.html#confluent_kafka.Message
 
         self.api_endpoint = api_endpoint
-        self.header_topic = msg.topic()
-        self.header_offset = msg.offset()
-        self.header_partition = msg.partition()
-        self.header = {
-            "topic": self.header_topic,
-            "offset": self.header_offset,
-            "partition": self.header_partition
+        self.msg_header_topic = msg.topic()
+        self.msg_header_offset = msg.offset()
+        self.msg_header_partition = msg.partition()
+        self.msg_header = {
+            "topic": self.msg_header_topic,
+            "offset": self.msg_header_offset,
+            "partition": self.msg_header_partition
             }
 
         self.operation, self.request_body = self._set_message_properties(msg)
@@ -63,10 +63,7 @@ class Message():
     def handle_message(self):
         """ Public method. Send request to API or do nothing """
 
-        print(self.header)
-        print(self.request_body)
-
-        # Unless operation is a tombstone operation, call API to update ElasticSearch database
+        # Unless operation is a tombstone operation, send event to API in request body
         if self.operation != "t":
             return self._send_request(self.request_body)
 
@@ -75,11 +72,21 @@ class Message():
     def _send_request(self, request_body):
         """ Send POST request to API """
 
-        headers = {"Content-Type": "application/json; charset=utf-8"}
+        print(f"msg_header:{self.msg_header}")
+        print(f"msg request_body before post request:{self.request_body}")
 
-        print(f"sending request to url: {self.api_endpoint}")
+        request_headers = {"Content-Type": "application/json; charset=utf-8"}
 
-        return requests.post(self.api_endpoint, headers=headers, json=request_body)
+        print(f"\nsending request to url: {self.api_endpoint}")
+
+        response = requests.post(self.api_endpoint, headers=request_headers, json=request_body)
+
+        print(f"\nresponse.status_code:{response.status_code}")
+        print(f"response.text:{response.text}")
+        input("press enter")
+
+        return response
+        
 
     def _handle_tombstone(self):
         """ Handle empty message ("tombstone") - do nothing """

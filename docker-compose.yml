@@ -75,9 +75,9 @@ services:
             - DBPASSWORD=password
             - DBNAME=xlsson
             - SERVERNAME=MSSQLSERVER
-            - TABLEINCLUDELIST=dbo.persons
+            - TABLEINCLUDELIST=dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
             - DBHISTBOOTSTRAPSERVERS=kafka:9092
-            - DBHISTTOPIC=dbhistory.MSSQLSERVER
+            - DBHISTTOPIC=dbhistory.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
 
     consumer:
         container_name: consumer
@@ -86,11 +86,12 @@ services:
             - api-dev
         image: 'xlsson/kafka-proto-consumer:0.1'
         ports:
-            - '1932:1932'
+            - '2002:2002'
         links:
             - 'kafka:kafka'
         environment:
-            - TOPIC=MSSQLSERVER.dbo.persons
+            - PYTHONUNBUFFERED=1
+            - TOPIC=MSSQLSERVER.dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
             - BOOTSTRAP_BROKER_SERVER=kafka
             - BOOTSTRAP_BROKER_PORT=9092
             - API_ENDPOINT_SERVER=api-dev
@@ -102,12 +103,15 @@ services:
             - connect
             - api-dev
         image: 'xlsson/kafka-proto-consumer-dev:0.2'
+        volumes:
+            - ./containers/consumer:/consumer
         ports:
-            - '1932:1932'
+            - '2002:2002'
         links:
             - 'kafka:kafka'
         environment:
-            - TOPIC=MSSQLSERVER.dbo.persons
+            - PYTHONUNBUFFERED=1
+            - TOPIC=MSSQLSERVER.dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
             - BOOTSTRAP_BROKER_SERVER=kafka
             - BOOTSTRAP_BROKER_PORT=9092
             - API_ENDPOINT_SERVER=api-dev

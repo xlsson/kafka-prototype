@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import avro.io
 from confluent_kafka.admin import AdminClient
 
 from messagepoller import MessagePoller

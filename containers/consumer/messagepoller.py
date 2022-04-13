@@ -41,8 +41,10 @@ class MessagePoller():
                         sys.stderr.write('%% %s [%d] reached end at offset %d\n' %
                                         (msg.topic(), msg.partition(), msg.offset()))
                     elif msg.error():
+                        print("KafkaException")
                         raise KafkaException(msg.error())
                 else:
+                    
                     message = Message(msg, self.api_endpoint)
                     message.handle_message()
 
