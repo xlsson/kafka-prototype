@@ -28,7 +28,7 @@ class MessagePoller():
             i = 0
             while self.running:
                 i += 1
-                print(f"Polling ({i})...")
+                print(f'Polling ({i})...')
                 # Maybe increase this to near infinity? Why not simply wait until something happens instead of polling again?
                 # timeout (float) – Maximum time to block waiting for message, event or callback (default: infinite (None translated into -1 in the library)). (Seconds)
                 msg = self.consumer.poll(timeout=5.0)
@@ -41,7 +41,6 @@ class MessagePoller():
                         sys.stderr.write('%% %s [%d] reached end at offset %d\n' %
                                         (msg.topic(), msg.partition(), msg.offset()))
                     elif msg.error():
-                        print("KafkaException")
                         raise KafkaException(msg.error())
                 else:
                     
@@ -55,6 +54,6 @@ class MessagePoller():
 
     def _shutdown(self):
         # Close down consumer to commit final offsets.
-        print("close consumer, set 'running' to False")
+        print('close consumer, set "running" to False')
         self.consumer.close()
         self.running = False

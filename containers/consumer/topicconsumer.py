@@ -22,15 +22,15 @@ class TopicConsumer():
             # Use docker compose environment variables. Will exist if started from docker-compose.
             params['topics'] = [os.environ['TOPIC']]
             params['bootstrap_broker_servers'] = os.environ['BOOTSTRAP_BROKER_SERVER'] + ':' + os.environ['BOOTSTRAP_BROKER_PORT']
-            params['api_endpoint'] = "http://" + os.environ['API_ENDPOINT_SERVER'] + ":" + os.environ['API_ENDPOINT_PORT'] + "/Werbemittel/api/Importer"
-            print("Using environment parameters")
+            params['api_endpoint'] = 'http://' + os.environ['API_ENDPOINT_SERVER'] + ':' + os.environ['API_ENDPOINT_PORT'] + '/Werbemittel/api/Importer'
+            print('Using environment parameters')
 
         except:
             # Otherwise use the following
             params['topics'] = ['MSSQLSERVER.dbo.persons']
             params['bootstrap_broker_servers'] = 'localhost:9093'
-            params['api_endpoint'] = 'http://host.docker.internal:5000' + "/Werbemittel/api/Importer"
-            print("Failed to get environment params: fallback to default params")
+            params['api_endpoint'] = 'http://host.docker.internal:5000' + '/Werbemittel/api/Importer'
+            print('Failed to get environment params: fallback to default params')
 
         self._params = params
 
@@ -39,8 +39,8 @@ class TopicConsumer():
         admin_client = AdminClient({'bootstrap.servers': self._params['bootstrap_broker_servers']})
         md=admin_client.list_topics(timeout=10)
 
-        print(f"bootstrap_broker_servers: {self._params['bootstrap_broker_servers']}")
-        print(f"brokers: {md.brokers}")
+        print(f'bootstrap_broker_servers: {self._params["bootstrap_broker_servers"]}')
+        print(f'brokers: {md.brokers}')
 
 
     def start_polling(self):
