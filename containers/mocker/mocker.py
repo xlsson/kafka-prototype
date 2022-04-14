@@ -35,14 +35,18 @@ class Mocker():
 
     def create_job(self):
         """
-        Scenarios with the parameters job duration, batch size and time between inserts.
-        The scenarios will be picked out to test the system under certain conditions.
+        Scenarios with the parameters:
+        - job duration (seconds)
+        - batch size
+        - time between inserts (seconds)
+
+        The scenarios represent certain conditions under which the system should be tested
 
         std = standard
         bur = burst
         """
         scenarios = {
-            "std": (10, 2, 2),
+            "std": (300, 3000, 2),
             "bur": (360, 500, 60)
         }
 

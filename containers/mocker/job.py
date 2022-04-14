@@ -67,10 +67,6 @@ class Job():
         
         Metadata fields:
 
-        Field #1 ("ProduktId", tinyint):
-        Default 0.
-        Is set to 1 for the last row in the last batch.
-
         Field #2 ("Buchungscode", varchar(12)):
         Part of combined primary key.
         Timestamp marking the creation time of the row: mmddHHMMSS
@@ -88,6 +84,10 @@ class Job():
 
         Field #24 ("PreiszeileId", int): batch_nr of the job
         Field #25 ("PreisId", int): total nr_of_batches of the job
+
+        Field #26 ("AnzGarantien", tinyint):
+        Default 0.
+        Is set to 1 for the last row in the last batch.
         """
 
         creation_time = datetime.datetime.now().strftime("%m%d%H%M%S")
@@ -98,8 +98,8 @@ class Job():
         if (self.nr_of_batches - (batch_nr + 1) + self.rows_per_batch - (row_nr + 1)) == 0:
             last_row_flag = 1
         
-        mockdata_row = (last_row_flag, creation_time, 6053, random_string, 28322, 51, self.scenario_name, row_nr + 1, '2022-04-10', 2,2, 269.00, 191.30, 77.70, 1, 0.00, 
-	                    '1753-01-01', 0, 0, 0, 0, self.rows_per_batch, batch_nr + 1, self.nr_of_batches, 0, 0, 0, 0, 0, None, None)
+        mockdata_row = (1, creation_time, 6053, random_string, 28322, 51, self.scenario_name, row_nr + 1, '2022-04-10', 2,2, 269.00, 191.30, 77.70, 1, 0.00, 
+	                    '1753-01-01', 0, 0, 0, 0, self.rows_per_batch, batch_nr + 1, self.nr_of_batches, last_row_flag, 0, 0, 0, 0, None, None)
         
         return mockdata_row
 
