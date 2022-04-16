@@ -82,7 +82,7 @@ class Message():
         response = requests.post(self.api_endpoint, headers=request_headers, json=request_body)
 
         print(f'\nresponse.status_code:{response.status_code}')
-        print(f'response.text:{response.text}')
+        print(f'\nresponse.text:{response.text}')
         input('press enter')
 
         return response
