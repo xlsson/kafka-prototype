@@ -75,23 +75,23 @@ services:
             - DBPASSWORD=password
             - DBNAME=xlsson
             - SERVERNAME=MSSQLSERVER
-            - TABLEINCLUDELIST=dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
+            - TABLEINCLUDELIST=dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE_RICHARD
             - DBHISTBOOTSTRAPSERVERS=kafka:9092
-            - DBHISTTOPIC=dbhistory.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
+            - DBHISTTOPIC=dbhistory.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE_RICHARD
 
     consumer:
         container_name: consumer
         depends_on:
             - connect
             - api-dev
-        image: 'xlsson/kafka-proto-consumer:0.1'
+        image: 'xlsson/kafka-proto-consumer:0.4'
         ports:
             - '2002:2002'
         links:
             - 'kafka:kafka'
         environment:
             - PYTHONUNBUFFERED=1
-            - TOPIC=MSSQLSERVER.dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
+            - TOPIC=MSSQLSERVER.dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE_RICHARD
             - BOOTSTRAP_BROKER_SERVER=kafka
             - BOOTSTRAP_BROKER_PORT=9092
             - API_ENDPOINT_SERVER=api-dev
@@ -102,7 +102,7 @@ services:
         depends_on:
             - connect
             - api-dev
-        image: 'xlsson/kafka-proto-consumer-dev:0.2'
+        image: 'xlsson/kafka-proto-consumer-dev:0.4'
         volumes:
             - ./containers/consumer:/consumer
         ports:
@@ -111,7 +111,7 @@ services:
             - 'kafka:kafka'
         environment:
             - PYTHONUNBUFFERED=1
-            - TOPIC=MSSQLSERVER.dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
+            - TOPIC=MSSQLSERVER.dbo.STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE_RICHARD
             - BOOTSTRAP_BROKER_SERVER=kafka
             - BOOTSTRAP_BROKER_PORT=9092
             - API_ENDPOINT_SERVER=api-dev
@@ -127,7 +127,8 @@ services:
             - DBPORT=1433
             - SERVERNAME=MSSQLSERVER
             - DBNAME=xlsson
-            - DBTABLE=STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE
+            - DBTABLE=STREX_EXPORT_CACHE_LIVE_UNTERKUNFTTERMINE_RICHARD
             - DBUSER=richard
             - DBPASSWORD=password
             - SCENARIO=std
+            - MOCKDATA=json_data_20000_rows.json

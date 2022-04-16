@@ -26,7 +26,8 @@ class Mocker():
                 "db_name": os.environ['DBNAME'],
                 "db_table": os.environ['DBTABLE'],
                 "db_user": os.environ['DBUSER'],
-                "db_password": os.environ['DBPASSWORD']
+                "db_password": os.environ['DBPASSWORD'],
+                "mockdata": os.environ['MOCKDATA']
             }
             self.scenario_name = os.environ['SCENARIO']
 
@@ -46,7 +47,7 @@ class Mocker():
         bur = burst
         """
         scenarios = {
-            "std": (300, 3000, 2),
+            "std": (200, 3, 2),
             "bur": (360, 500, 60)
         }
 
