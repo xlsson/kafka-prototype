@@ -155,7 +155,7 @@ class Job():
         batch = self._create_batch(batch_nr)
 
         # Legend: %d = number, %s = string
-        sql_statement = 'INSERT INTO ' + self.table + ' VALUES (%d, %s, %d, %s, %d, %d, %s, %d, %d, %d, %d, %s, %s, %s, %d, %s, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)'
+        sql_statement = 'INSERT INTO ' + self.table + ' VALUES (%d, %s, %d, %s, %d, %d, %s, %d, %d, %d, %d, %s, %s, %s, %d, %s, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %s, %s)'
 
         print(batch)
         
