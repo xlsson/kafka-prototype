@@ -9,7 +9,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/Werbemittel/api/Importer', methods=["POST"])
+@app.route('/WerbemittelKafkaPrototype/api/Importer', methods=["POST"])
 def insert():
     """
     Route for API endpoint
